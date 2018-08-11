@@ -26,6 +26,7 @@ class Router {
 
     /**
      * 默认执行的控制器方法
+     * 显示页面视图
      */
     protected $strDefaultMethod = 'view';
 
