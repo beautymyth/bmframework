@@ -73,10 +73,10 @@ return [
      * 重定向配置
      */
     'redirect' => [
-        'uri_empty' => 'http://www.qq.com',
-        'uri_wrong' => 'http://www.sina.com',
-        'auth_wrong' => 'http://www.baidu.com',
-        'controller_wrong' => 'http://www.163.com'
+        'uri_empty' => 'http://blog.beautymyth.cn/home',
+        'uri_wrong' => 'http://blog.beautymyth.cn/home',
+        'auth_wrong' => 'http://blog.beautymyth.cn/login',
+        'controller_wrong' => 'http://blog.beautymyth.cn/home'
     ],
     /**
      * 显式的二级目录
