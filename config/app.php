@@ -103,7 +103,7 @@ return [
      * 2.如果没配置，则使用默认uri结构处理
      */
     'view' => [
-        'login' => 'web/common/login.view'
+        'login' => 'web/common/login'
     ],
     /**
      * 控制台路由
