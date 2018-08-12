@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Controller\Web\Common;
+namespace App\Http\Controller\Web\Template;
 
-use App\Http\Controller\Web\Template\LayoutController;
 use Framework\Service\Foundation\Controller as BaseController;
 
-class LoginController extends BaseController {
+class LayoutController extends BaseController {
 
     /**
      * 控制器方法对应的中间件
@@ -25,20 +24,14 @@ class LoginController extends BaseController {
      * 获取视图模板里填充的数据
      * 模板,内容,js,css
      */
-    protected function getViewData() {
+    public function getViewData() {
         return [
-            /**
-             * 页面模板
-             */
-            'template' => [
-                'controller' => LayoutController::class,
-                'view' => 'web/template/layout'
-            ],
             /**
              * 文档内容
              */
             'content' => [
-                'title' => '登录'
+                'layout_user_name' => '登录',
+                'layout_menu' => 'menu'
             ],
             /**
              * js
@@ -47,22 +40,16 @@ class LoginController extends BaseController {
              * is_remote:远程文件，直接加载
              */
             'js' => [
-                    ['path' => 'common/login.js', 'is_pack' => 1, 'is_remote' => 0]
+                    ['path' => 'plugin/jquery-1.12.2.min.js', 'is_pack' => 0, 'is_remote' => 0],
+                    ['path' => 'https://cdn.jsdelivr.net/npm/vue', 'is_pack' => 0, 'is_remote' => 1]
             ],
             /**
              * css
              */
             'css' => [
-                    ['path' => 'common/login.css', 'is_pack' => 1, 'is_remote' => 0]
+                    ['path' => 'plugin/bootstrap.min.css', 'is_pack' => 0, 'is_remote' => 0]
             ]
         ];
-    }
-
-    /**
-     * 登陆操作
-     */
-    public function login() {
-        var_dump('login');
     }
 
 }

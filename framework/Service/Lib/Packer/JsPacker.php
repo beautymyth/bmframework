@@ -94,7 +94,7 @@ class JsPacker {
         $this->_specialChars = $_specialChars;
     }
 
-    public function init() {
+    public function init($_script) {
         $this->_script = $_script . "\n";
     }
 

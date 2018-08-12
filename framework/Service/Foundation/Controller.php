@@ -29,6 +29,7 @@ abstract class Controller {
 
     /**
      * 获取视图模板里填充的数据
+     * 模板,内容,js,css
      */
     protected function getViewData() {
         return [];

@@ -42,11 +42,22 @@ class View {
      * 生成视图
      */
     public function make($arrData) {
-        //获取视图内容
+        //获取当前视图内容
         $strViewPath = $this->getViewPath();
         $strView = file_get_contents($strViewPath);
 
-        //todo:解析,模板,js,css
+        //获取视图的模板内容
+        $strViewTlp = '';
+        $arrDataTlp = [];
+        $this->getTemplate($arrData['template'], $strViewTlp, $arrDataTlp);
+
+        //合并数据
+        $arrData = array_merge_recursive($arrDataTlp, $arrData);
+        if (!empty($strViewTlp)) {
+            $strView = str_replace('{{layout_content}}', $strView, $strViewTlp);
+        }
+
+        //内容,js,css
         $this->resolveContent($strView, $arrData['content']);
         $this->resolveCss($strView, $arrData['css']);
         $this->resolveJs($strView, $arrData['js']);
@@ -56,10 +67,25 @@ class View {
     }
 
     /**
+     * 获取模板内容
+     */
+    protected function getTemplate($arrTemplate, &$strViewTlp, &$arrDataTlp) {
+        if (isset($arrTemplate['controller'])) {
+            $objTemplateController = $this->objApp->make($arrTemplate['controller']);
+            $arrDataTlp = $objTemplateController->getViewData();
+        }
+
+        if (isset($arrTemplate['view'])) {
+            $strTemplatePath = $this->objApp->make('path.resource') . '/view/' . $arrTemplate['view'] . '.view.php';
+            $strViewTlp = file_exists($strTemplatePath) ? file_get_contents($strTemplatePath) : '';
+        }
+    }
+
+    /**
      * 解析内容
      */
     protected function resolveContent(&$strView, $arrContent) {
-        $strReg = '/({{\s*([a-z]+)\s*}})/i';
+        $strReg = '/({{\s*([a-z_]+)\s*}})/i';
         preg_match_all($strReg, $strView, $arrMatch, PREG_PATTERN_ORDER);
         if (!empty($arrMatch[0])) {
             for ($i = 0, $j = count($arrMatch[1]); $i < $j; $i++) {
@@ -110,7 +136,7 @@ class View {
 
         //如果压缩文件不存在则加载非压缩文件
         if (file_exists($strPackCssPath)) {
-            return '/packer/' . str_replace('.css', '.min.css', $strCssPath);
+            return 'packer/' . str_replace('.css', '.min.css', $strCssPath);
         } else {
             return $strCssPath;
         }
@@ -177,7 +203,7 @@ class View {
 
         //如果压缩文件不存在则加载非压缩文件
         if (file_exists($strPackJsPath)) {
-            return '/packer/' . str_replace('.js', '.min.js', $strJsPath);
+            return 'packer/' . str_replace('.js', '.min.js', $strJsPath);
         } else {
             return $strJsPath;
         }
