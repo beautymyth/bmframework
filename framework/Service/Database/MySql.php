@@ -7,6 +7,7 @@ use Exception;
 use PDOException;
 use PDOStatement;
 use Framework\Facade\Log;
+use Framework\Facade\Des;
 use Framework\Facade\Config;
 
 /**
@@ -129,7 +130,7 @@ class MySql {
             try {
                 $arrConnectInfo = $this->getPdoReadConnectInfo();
                 $strDsn = sprintf('mysql:host=%s;port=%s;dbname=%s;charset=UTF8;', $arrConnectInfo['host'], $arrConnectInfo['port'], $arrConnectInfo['db']);
-                $this->objPdoRead = new PDO($strDsn, $arrConnectInfo['username'], $arrConnectInfo['password'], [PDO::ATTR_TIMEOUT => 3]);
+                $this->objPdoRead = new PDO($strDsn, $arrConnectInfo['username'], Des::decrypt($arrConnectInfo['password']), [PDO::ATTR_TIMEOUT => 3]);
                 $this->objPdoRead->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); //有错误时抛出异常
             } catch (PDOException $e) {
                 $this->arrConnectInfoErr[] = $this->getErrKey($arrConnectInfo);
@@ -156,7 +157,7 @@ class MySql {
             if (!$this->objPdoWrite instanceof PDO) {
                 $arrConnectInfo = $this->getPdoWriteConnectInfo();
                 $strDsn = sprintf('mysql:host=%s;port=%s;dbname=%s;charset=UTF8;', $arrConnectInfo['host'], $arrConnectInfo['port'], $arrConnectInfo['db']);
-                $this->objPdoWrite = new PDO($strDsn, $arrConnectInfo['username'], $arrConnectInfo['password'], [PDO::ATTR_TIMEOUT => 3]);
+                $this->objPdoWrite = new PDO($strDsn, $arrConnectInfo['username'], Des::decrypt($arrConnectInfo['password']), [PDO::ATTR_TIMEOUT => 3]);
                 $this->objPdoWrite->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); //有错误时抛出异常
             }
             return $this->objPdoWrite;
