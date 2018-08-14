@@ -42,12 +42,15 @@ class CheckSign {
      * 有效性检查
      */
     protected function checkSign($objRequest) {
-        //1.请求参数是否有sign_key与from_domain
+        //1.请求参数是否有sign_key,from_domain,union_id
         $arrParam = $objRequest->getAllParam();
         if (!isset($arrParam['sign_key']) || empty($arrParam['sign_key'])) {
             return false;
         }
         if (!isset($arrParam['from_domain']) || empty($arrParam['from_domain'])) {
+            return false;
+        }
+        if (!isset($arrParam['union_id']) || empty($arrParam['union_id'])) {
             return false;
         }
         if (empty(Config::get('des.md5_key.' . $arrParam['from_domain']))) {
