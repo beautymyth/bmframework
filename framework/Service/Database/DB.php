@@ -55,7 +55,7 @@ class DB {
      * 获取表信息
      */
     protected function getTableInfo() {
-        $arrTableInfo = ['business_type' => 'message'];
+        $arrTableInfo = ['business_type' => Config::get('database.default_business_type')];
         if (!empty($arrTableInfo)) {
             return $arrTableInfo;
         }

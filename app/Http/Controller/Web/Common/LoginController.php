@@ -2,10 +2,16 @@
 
 namespace App\Http\Controller\Web\Common;
 
+use App\Http\Model\Web\Common\LoginModel;
 use App\Http\Controller\Web\Template\LayoutController;
 use Framework\Service\Foundation\Controller as BaseController;
 
 class LoginController extends BaseController {
+
+    /**
+     * 登录实例
+     */
+    protected $objLoginModel;
 
     /**
      * 控制器方法对应的中间件
@@ -17,8 +23,8 @@ class LoginController extends BaseController {
     /**
      * 依赖注入，使用外部类
      */
-    public function __construct() {
-        
+    public function __construct(LoginModel $objLoginModel) {
+        $this->objLoginModel = $objLoginModel;
     }
 
     /**
@@ -47,13 +53,13 @@ class LoginController extends BaseController {
              * is_remote:远程文件，直接加载
              */
             'js' => [
-                    ['path' => 'common/login.js', 'is_pack' => 1, 'is_remote' => 0]
+                ['path' => 'common/login.js', 'is_pack' => 1, 'is_remote' => 0]
             ],
             /**
              * css
              */
             'css' => [
-                    ['path' => 'common/login.css', 'is_pack' => 1, 'is_remote' => 0]
+                ['path' => 'common/login.css', 'is_pack' => 1, 'is_remote' => 0]
             ]
         ];
     }
@@ -63,6 +69,7 @@ class LoginController extends BaseController {
      */
     public function login() {
         var_dump('login');
+        $this->objLoginModel->checkLogin();
     }
 
 }
