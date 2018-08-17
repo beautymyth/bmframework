@@ -42,9 +42,9 @@ class ExceptionHandler implements ExceptionHandlerContract {
             return $objException->render($this->objApp, $objException);
         }
 
-        //生成响应
-        $mixResponse = ['err_msg' => '请求错误，请稍后再试' . $objException->getMessage()];
-        return $objApp->make(ResponseFactory::class)->make($mixResponse);
+        //生成标准响应
+        $mixResponse = ['err_msg' => '请求错误，请稍后再试'];
+        return $this->objApp->make(ResponseFactory::class)->make($mixResponse);
     }
 
 }
