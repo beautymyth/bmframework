@@ -22,6 +22,8 @@ class HandleExceptions {
         set_exception_handler([$this, 'handleException']);
 
         set_error_handler([$this, 'handleError']);
+
+        register_shutdown_function([$this, 'handleShutDown']);
     }
 
     /**
@@ -57,6 +59,24 @@ class HandleExceptions {
         //日志记录
         $strLog = sprintf("\n errno:%s \n errstr:%s \n errfile:%s \n errline:%s \n", $strErrNo, $strErrStr, $strErrFile, $intErrLine);
         $this->objApp->make('log')->log($strLog, Config::get('const.Log.LOG_ERR'));
+    }
+
+    /**
+     * 自定义程序结束处理
+     */
+    public function handleShutDown() {
+        if (!is_null($arrError = error_get_last()) && $this->isFatal($arrError['type'])) {
+            //日志记录
+            $strLog = sprintf("\n errno:%s \n errstr:%s \n errfile:%s \n errline:%s \n", $arrError['type'], $arrError['message'], $arrError['file'], $arrError['line']);
+            $strLog = $this->objApp->make('log')->log($strLog, Config::get('const.Log.LOG_ERR'));
+        }
+    }
+
+    /**
+     * 是否为致命错误
+     */
+    protected function isFatal($strType) {
+        return in_array($strType, [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR, E_PARSE]);
     }
 
     /**
