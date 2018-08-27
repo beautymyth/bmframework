@@ -89,6 +89,20 @@ class MySql {
     }
 
     /**
+     * 连接超时时间
+     */
+    private function getConnectTimeout() {
+        return Config::get('database.' . $this->arrConnectInfo['master']['business'] . '.connect_timeout');
+    }
+
+    /**
+     * 是否使用长连接
+     */
+    private function getPersistent() {
+        return Config::get('database.' . $this->arrConnectInfo['master']['business'] . '.persistent');
+    }
+
+    /**
      * 获取读连接的数据库连接信息
      */
     private function getPdoReadConnectInfo() {
@@ -130,7 +144,7 @@ class MySql {
             try {
                 $arrConnectInfo = $this->getPdoReadConnectInfo();
                 $strDsn = sprintf('mysql:host=%s;port=%s;dbname=%s;charset=UTF8;', $arrConnectInfo['host'], $arrConnectInfo['port'], $arrConnectInfo['db']);
-                $this->objPdoRead = new PDO($strDsn, $arrConnectInfo['username'], Des::decrypt($arrConnectInfo['password']), [PDO::ATTR_TIMEOUT => 3]);
+                $this->objPdoRead = new PDO($strDsn, $arrConnectInfo['username'], Des::decrypt($arrConnectInfo['password']), [PDO::ATTR_TIMEOUT => $this->getConnectTimeout(), PDO::ATTR_PERSISTENT => $this->getPersistent()]);
                 $this->objPdoRead->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); //有错误时抛出异常
             } catch (PDOException $e) {
                 $this->arrConnectInfoErr[] = $this->getErrKey($arrConnectInfo);
