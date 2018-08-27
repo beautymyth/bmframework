@@ -5,37 +5,49 @@
  */
 return [
     /**
+     * 默认业务类型
+     */
+    'default_business_type' => 'devmanager',
+    /**
      * 业务类别
      */
-    'message' => [
+    'devmanager' => [
         /**
          * 主库是否参与读
          */
         'master_read' => 1,
         /**
+         * 连接超时时间
+         */
+        'connect_timeout' => 3,
+        /**
+         * 长连接
+         */
+        'persistent' => true,
+        /**
          * 主库
          */
         'master' => [
-            'business' => 'message',
+            'business' => 'devmanager',
             'type' => 'mysql',
-            'host' => 'host',
+            'host' => '127.0.0.1',
             'port' => '3306',
-            'db' => 'dbname',
-            'username' => 'username',
-            'password' => 'password'
+            'db' => 'devmanager',
+            'username' => 'test',
+            'password' => '+foUvu6l60YHoUj79pj33oJLw3AUf7ix/UtvKF7DHMaO57Oq+TA+AtTrbjPf57rRUl0wurmAgwVSDPCKvpQ8Kw=='
         ],
         /**
          * 从库
          */
         'slave' => [
             [
-                'business' => 'message',
+                'business' => 'devmanager',
                 'type' => 'mysql',
-                'host' => 'host',
+                'host' => '127.0.0.1',
                 'port' => '3306',
-                'db' => 'dbname',
-                'username' => 'username',
-                'password' => 'password'
+                'db' => 'devmanager',
+                'username' => 'test',
+                'password' => '+foUvu6l60YHoUj79pj33oJLw3AUf7ix/UtvKF7DHMaO57Oq+TA+AtTrbjPf57rRUl0wurmAgwVSDPCKvpQ8Kw=='
             ]
         ]
     ]
