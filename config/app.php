@@ -110,7 +110,8 @@ return [
      * 1.配置uri对应的控制器
      */
     'console_route' => [
-        'send_wechat_msg_consumer' => 'Console\\SendWeChatMsgController@run'
+        'send_wechat_msg_consumer' => 'Console\\SendWeChatMsgController@run',
+        'mysql_connect_pool' => 'Console\\MysqlConnectPoolController@run'
     ]
 ];
 

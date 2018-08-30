@@ -49,6 +49,22 @@ return [
                 'username' => 'test',
                 'password' => '+foUvu6l60YHoUj79pj33oJLw3AUf7ix/UtvKF7DHMaO57Oq+TA+AtTrbjPf57rRUl0wurmAgwVSDPCKvpQ8Kw=='
             ]
+        ],
+        /**
+         * 连接池信息
+         */
+        'connect_pool' => [
+            'host' => '127.0.0.1',
+            'port' => '9602',
+            /**
+             * 连接池队列，公用连接
+             */
+            'worker_num' => 4,
+            /**
+             * 连接次可用连接
+             */
+            'task_num' => 2,
+            'log_file' => 'devmanager_connect_pool.log'
         ]
     ]
 ];

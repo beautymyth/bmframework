@@ -340,7 +340,6 @@ class DB {
     /**
      * 执行select语句，无需分页。
      * <br>涉及表如果分表的话，表名使用[]包裹；涉及多个分表的话需要分表条件一致。
-     * @param string $strMainTable 主表名，用于确定数据库连接
      * @param string $strSql 需要执行的语句
      * @param array $arrParams 参数
      * @param bool $blnException 是否出现异常，默认为false。如果出现异常值为true
