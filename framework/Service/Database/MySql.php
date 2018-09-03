@@ -233,7 +233,7 @@ class MySql {
                 //连接异常，重置连接后执行
                 $this->blnTryFlag = true;
                 $this->objPdoWrite = null;
-                $this->beginTran();
+                return $this->beginTran();
             }
             throw new Exception($e->getMessage());
         }
