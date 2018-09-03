@@ -25,6 +25,11 @@ class HttpRequest implements RequestContract {
     protected $arrFile = [];
 
     /**
+     * 每次请求的唯一标识
+     */
+    protected $strRequestID = '';
+
+    /**
      * 创建请求实例
      */
     public function __construct() {
@@ -38,6 +43,7 @@ class HttpRequest implements RequestContract {
         $this->arrParam = array_merge((array) filter_input_array(INPUT_GET), (array) json_decode(file_get_contents('php://input'), true));
         $this->arrCookie = filter_input_array(INPUT_COOKIE);
         $this->arrFile = $_FILES;
+        $this->setRequestID(getGUID());
     }
 
     /**
@@ -144,6 +150,20 @@ class HttpRequest implements RequestContract {
             $strIP = getenv('SERVER_ADDR');
         }
         return $strIP;
+    }
+
+    /**
+     * 获取请求标识id(guid)
+     */
+    public function setRequestID($strRequestID) {
+        $this->strRequestID = $strRequestID;
+    }
+
+    /**
+     * 获取请求标识id
+     */
+    public function getRequestID() {
+        return $this->strRequestID;
     }
 
 }

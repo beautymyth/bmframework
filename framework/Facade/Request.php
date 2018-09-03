@@ -11,6 +11,8 @@ namespace Framework\Facade;
  * @method static string getSecondDir()
  * @method static string getClientIP()
  * @method static string getServerIP()
+ * @method static void setRequestID($strRequestID)
+ * @method static string getRequestID()
  *
  * @see \Framework\Service\Http\HttpRequest
  * @see \Framework\Service\Http\ConsoleRequest
