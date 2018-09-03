@@ -40,7 +40,7 @@ class HttpRequest implements RequestContract {
      * 初始化数据
      */
     protected function init() {
-        $this->arrParam = array_merge((array) filter_input_array(INPUT_GET), (array) json_decode(file_get_contents('php://input'), true));
+        $this->arrParam = array_merge((array) filter_input_array(INPUT_GET), (array) filter_input_array(INPUT_POST), (array) json_decode(file_get_contents('php://input'), true));
         $this->arrCookie = filter_input_array(INPUT_COOKIE);
         $this->arrFile = $_FILES;
         $this->setRequestID(getGUID());
