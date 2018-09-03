@@ -64,8 +64,9 @@ class Log {
                 . "ServerIP:[%s]\r\n"
                 . "Url:[%s]\r\n"
                 . "UserID:[%s]\r\n"
+                . "RequestID:[%s]\r\n"
                 . "Memo:[%s]\r\n"
-                . "Trace:[%s]\r\n", $strLine, date('Y-m-d H:i:s'), Request::getClientIP(), Request::getServerIP(), Request::getUri(), User::getUserId(), $strContent, $strBackTrace);
+                . "Trace:[%s]\r\n", $strLine, date('Y-m-d H:i:s'), Request::getClientIP(), Request::getServerIP(), Request::getUri(), User::getUserId(), Request::getRequestID(), $strContent, $strBackTrace);
 
         //写日志
         if (!file_exists($strFileName)) {

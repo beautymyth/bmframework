@@ -20,6 +20,11 @@ class ConsoleRequest implements RequestContract {
     protected $strUri = '';
 
     /**
+     * 每次请求的唯一标识
+     */
+    protected $strRequestID = '';
+
+    /**
      * 创建请求实例
      */
     public function __construct($argv = []) {
@@ -32,6 +37,7 @@ class ConsoleRequest implements RequestContract {
     protected function init($argv) {
         $this->strUri = count($argv) >= 2 ? $argv[1] : '';
         $this->arrParam = array_slice($argv, 2);
+        $this->setRequestID(getGUID());
     }
 
     /**
@@ -97,6 +103,20 @@ class ConsoleRequest implements RequestContract {
         $strIpCmd = "ifconfig eth0 | sed -n '/inet addr/p' | awk '{print $2}' | awk -F ':' '{print $2}'";
         $strIP = trim(exec($strIpCmd));
         return $strIP;
+    }
+
+    /**
+     * 获取请求标识id(guid)
+     */
+    public function setRequestID($strRequestID) {
+        $this->strRequestID = $strRequestID;
+    }
+
+    /**
+     * 获取请求标识id
+     */
+    public function getRequestID() {
+        return $this->strRequestID;
     }
 
 }

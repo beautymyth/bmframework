@@ -49,4 +49,14 @@ interface Request {
      * 获取服务端ip
      */
     public function getServerIP();
+
+    /**
+     * 获取请求标识id(guid)
+     */
+    public function setRequestID($strRequestID);
+
+    /**
+     * 获取请求标识id
+     */
+    public function getRequestID();
 }
