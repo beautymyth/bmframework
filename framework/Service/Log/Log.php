@@ -49,6 +49,12 @@ class Log {
             return;
         }
 
+        //错误堆栈
+        $strBackTrace = '';
+        if (strtolower(substr($strLogType, -3)) == 'err') {
+            $strBackTrace = $this->getBackTrace();
+        }
+
         //拼接内容
         $strLine = "----------------------------------------------------------------------";
         $strContent = sprintf(
@@ -58,7 +64,8 @@ class Log {
                 . "ServerIP:[%s]\r\n"
                 . "Url:[%s]\r\n"
                 . "UserID:[%s]\r\n"
-                . "Memo:[%s]\r\n", $strLine, date('Y-m-d H:i:s'), Request::getClientIP(), Request::getServerIP(), Request::getUri(), User::getUserId(), $strContent);
+                . "Memo:[%s]\r\n"
+                . "Trace:[%s]\r\n", $strLine, date('Y-m-d H:i:s'), Request::getClientIP(), Request::getServerIP(), Request::getUri(), User::getUserId(), $strContent, $strBackTrace);
 
         //写日志
         if (!file_exists($strFileName)) {
@@ -120,6 +127,21 @@ class Log {
             return $intFileCount > 0 ? $strLogDir . $strFileNameReg . $intFileCount . '.log' : $strLogDir . $strFileNameReg . '.log';
         }
         return '';
+    }
+
+    /**
+     * 获取跟踪信息
+     */
+    private function getBackTrace() {
+        $strTrace = '';
+        $arrTrace = debug_backtrace();
+        foreach ($arrTrace as $arrTraceTmp) {
+            $strFile = isset($arrTraceTmp['file']) ? $arrTraceTmp['file'] : '';
+            $strFuncion = isset($arrTraceTmp['function']) ? $arrTraceTmp['function'] : '';
+            $strLine = isset($arrTraceTmp['line']) ? $arrTraceTmp['line'] : '';
+            $strTrace.="文件：{$strFile}，方法：{$strFuncion}，行号：{$strLine}\r\n";
+        }
+        return $strTrace;
     }
 
 }
