@@ -23,18 +23,18 @@ return [
         /**
          * 长连接
          */
-        'persistent' => true,
+        'persistent' => false,
         /**
          * 主库
          */
         'master' => [
             'business' => 'devmanager',
             'type' => 'mysql',
-            'host' => '127.0.0.1',
+            'host' => '10.100.2.235',
             'port' => '3306',
             'db' => 'devmanager',
-            'username' => 'test',
-            'password' => '+foUvu6l60YHoUj79pj33oJLw3AUf7ix/UtvKF7DHMaO57Oq+TA+AtTrbjPf57rRUl0wurmAgwVSDPCKvpQ8Kw=='
+            'username' => 'appuser',
+            'password' => 'h86oFd19Ley8//NSWK/UvCzirw0cg6TolMo+RrYl0g08Pbf+4WYt1j3Mv2D8Y7ZkI/DfSg6XhI5+XkBgb4etcA=='
         ],
         /**
          * 从库
@@ -43,11 +43,11 @@ return [
             [
                 'business' => 'devmanager',
                 'type' => 'mysql',
-                'host' => '127.0.0.1',
+                'host' => '10.100.2.235',
                 'port' => '3306',
                 'db' => 'devmanager',
-                'username' => 'test',
-                'password' => '+foUvu6l60YHoUj79pj33oJLw3AUf7ix/UtvKF7DHMaO57Oq+TA+AtTrbjPf57rRUl0wurmAgwVSDPCKvpQ8Kw=='
+                'username' => 'appuser',
+                'password' => 'h86oFd19Ley8//NSWK/UvCzirw0cg6TolMo+RrYl0g08Pbf+4WYt1j3Mv2D8Y7ZkI/DfSg6XhI5+XkBgb4etcA=='
             ]
         ],
         /**
