@@ -119,7 +119,7 @@ class Router {
             throw new ControllerException(json_encode(['err_msg' => '请求地址错误']));
         }
         //非ajax，需要重定向
-        throw new ControllerException();
+        throw new ControllerException('请求地址错误');
     }
 
     /**

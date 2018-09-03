@@ -244,7 +244,7 @@ class View {
         }
 
         //抛出异常，需要重定向
-        throw new ControllerException();
+        throw new ControllerException('请求视图错误');
     }
 
     /**
