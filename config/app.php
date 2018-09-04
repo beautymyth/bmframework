@@ -15,7 +15,8 @@ return [
         'Request' => Framework\Facade\Request::class,
         'User' => Framework\Facade\User::class,
         'Des' => Framework\Facade\Des::class,
-        'Http' => Framework\Facade\Http::class
+        'Http' => Framework\Facade\Http::class,
+        'App' => Framework\Facade\App::class
     ],
     /**
      * 服务提供者
