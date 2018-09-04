@@ -34,6 +34,7 @@ return [
         Framework\Provider\View\ViewServiceProvider::class,
         Framework\Provider\Security\DesServiceProvider::class,
         Framework\Provider\Network\HttpServiceProvider::class,
+        Framework\Provider\Validation\ValidFormatServiceProvider::class,
     /**
      * 应用
      */

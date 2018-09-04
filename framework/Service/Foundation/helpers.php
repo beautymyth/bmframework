@@ -1,8 +1,26 @@
 <?php
 
+use Framework\Service\Foundation\Container;
+use Framework\Service\Validation\ValidFormat;
+
 /*
  * 全局通用方法
  */
+
+if (!function_exists('app')) {
+
+    /**
+     * 获取容器实例
+     */
+    function app($strAbstract = null, array $arrParameters = []) {
+        if (is_null($strAbstract)) {
+            return Container::getInstance();
+        }
+
+        return Container::getInstance()->make($strAbstract, $arrParameters);
+    }
+
+}
 
 if (!function_exists('getMicroTime')) {
 
@@ -36,6 +54,19 @@ if (!function_exists('getGUID')) {
                 . substr($strCharId, 16, 4) . $strHyphen
                 . substr($strCharId, 20, 12);
         return $strGuid;
+    }
+
+}
+
+if (!function_exists('checkFormat')) {
+
+    /**
+     * 检查数据格式是否正确
+     * @param mix $mixValue 需要检查的数据
+     * @param string $strFormatType 需要匹配的格式，详见Config.const.ValidFormat
+     */
+    function checkFormat($mixValue, $strFormatType) {
+        return app(ValidFormat::class)->check($mixValue, $strFormatType);
     }
 
 }
