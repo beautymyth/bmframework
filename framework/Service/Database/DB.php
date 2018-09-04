@@ -68,7 +68,7 @@ class DB {
      */
     protected function getBusinessInfo() {
         $strBusinessType = $this->arrTableInfo[$this->strMainTable]['table']['business_type'];
-        $arrBusinessInfo = Config::get('database.' . $strBusinessType);
+        $arrBusinessInfo = Config::get('database.business_info.' . $strBusinessType);
         if (!empty($arrBusinessInfo)) {
             return $arrBusinessInfo;
         }

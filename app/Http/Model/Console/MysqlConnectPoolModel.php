@@ -99,19 +99,19 @@ class MysqlConnectPoolModel {
     protected function prepare() {
         //实例化对象
         //swoole_get_local_ip()获取本机ip
-        $this->objServer = new swoole_server(Config::get('database.devmanager.connect_pool.host'), Config::get('database.devmanager.connect_pool.port'));
+        $this->objServer = new swoole_server(Config::get('database.business_info.devmanager.connect_pool.host'), Config::get('database.business_info.devmanager.connect_pool.port'));
         //设置运行参数
         $this->objServer->set(array(
             'daemonize' => 1, //以守护进程执行
             'max_request' => 10000, //worker进程在处理完n次请求后结束运行
-            'worker_num' => Config::get('database.devmanager.connect_pool.worker_num'),
-            'task_worker_num' => Config::get('database.devmanager.connect_pool.task_num'),
+            'worker_num' => Config::get('database.business_info.devmanager.connect_pool.worker_num'),
+            'task_worker_num' => Config::get('database.business_info.devmanager.connect_pool.task_num'),
             "task_ipc_mode " => 3, //使用消息队列通信，并设置为争抢模式,
             'heartbeat_check_interval' => 5, //每隔多少秒检测一次，单位秒，Swoole会轮询所有TCP连接，将超过心跳时间的连接关闭掉
             'heartbeat_idle_time' => 10, //TCP连接的最大闲置时间，单位s , 如果某fd最后一次发包距离现在的时间超过则关闭
             'open_eof_split' => true,
             'package_eof' => "\r\n",
-            "log_file" => $this->objApp->make('path.storage') . "\log\\" . Config::get('database.devmanager.connect_pool.log_file')
+            "log_file" => $this->objApp->make('path.storage') . "\log\\" . Config::get('database.business_info.devmanager.connect_pool.log_file')
         ));
         //设置事件回调
         $this->objServer->on('Connect', array($this, 'onConnect'));
