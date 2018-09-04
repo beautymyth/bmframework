@@ -48,6 +48,55 @@ return [
          * 接口日志
          */
         'LOG_APIINFO' => 'APIINFO'
+    ],
+    /**
+     * 数据格式校验类
+     */
+    'ValidFormat' => [
+        /**
+         * int
+         */
+        'FORMAT_INT' => 'int',
+        /**
+         * decimal
+         */
+        'FORMAT_DECIMAL' => 'decimal',
+        /**
+         * datetime
+         */
+        'FORMAT_DATETIME' => 'datetime',
+        /**
+         * guid
+         */
+        'FORMAT_UNIQ' => 'uniq',
+        /**
+         * email
+         */
+        'FORMAT_EMAIL' => 'email',
+        /**
+         * 身份证
+         */
+        'FORMAT_IDCARD' => 'idcard',
+        /**
+         * 手机
+         */
+        'FORMAT_MOBILE' => 'mobile',
+        /**
+         * 用户名：需要以字母开头，长度为6-18位，只能包含字母数字下划线
+         */
+        'FORMAT_USERNAME' => 'username',
+        /**
+         * 密码：需要包含字母与数字，长度为6-18位，只能包含字母数字下划线
+         */
+        'FORMAT_PASSWORD' => 'password',
+        /**
+         * 文件名：长度为1-50位，只能包含中文字母数字下划线中划线空格中文括号英文括号
+         */
+        'FORMAT_FILENAME' => 'filename',
+        /**
+         * 文件名：长度为1-10位，只能包含中文字母数字
+         */
+        'FORMAT_VIEWNAME' => 'viewname'
     ]
 ];
 
