@@ -70,3 +70,20 @@ if (!function_exists('checkFormat')) {
     }
 
 }
+
+if (!function_exists('getStrLength')) {
+
+    /**
+     * 获取字符串的字节数
+     * @param string $strValue 字符串
+     * @param string $strSqlType 数据库类型
+     */
+    function getStrLength($strValue, $strSqlType = 'mysql') {
+        if ($strSqlType == 'mysql') {
+            return mb_strlen($strValue, 'UTF8');
+        } else {
+            return (strlen($strValue) + mb_strlen($strValue, 'UTF8')) / 2;
+        }
+    }
+
+}
