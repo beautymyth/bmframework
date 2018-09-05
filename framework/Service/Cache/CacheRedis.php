@@ -28,9 +28,9 @@ class CacheRedis implements CacheContract {
             $objReadHander = $this->getReadHander($blnTry);
             return is_null($objReadHander) ? false : $objReadHander->get($strKey);
         } catch (Exception $e) {
-            //超时重试
+            //异常重试一次
             $strMsg = $e->getMessage();
-            if ($strMsg == 'read error on connection' && $blnTry == false) {
+            if ($blnTry == false) {
                 return $this->get($strKey, true);
             }
             //日志记录
@@ -38,6 +38,30 @@ class CacheRedis implements CacheContract {
             $strLog = sprintf("\n commond:%s \n key:%s \n memo:%s \n startdate:%s \n enddate:%s \n connectinfo:%s \n", 'get', $strKey, $strMsg, $dateStartTime, $dateEndTime, json_encode($this->arrCurConnectInfo));
             Log::log($strLog, Config::get('const.Log.LOG_REDISERR'));
             return false;
+        }
+    }
+
+    /**
+     * 批量获取值
+     * @param array $arrKey keys
+     * @return string or bool
+     */
+    public function mGet($arrKey, $blnTry = false) {
+        try {
+            $dateStartTime = getMicroTime();
+            $objReadHander = $this->getReadHander($blnTry);
+            return is_null($objReadHander) ? [] : $objReadHander->mGet($arrKey);
+        } catch (Exception $e) {
+            //异常重试一次
+            $strMsg = $e->getMessage();
+            if ($blnTry == false) {
+                return $this->mGet($arrKey, true);
+            }
+            //日志记录
+            $dateEndTime = getMicroTime();
+            $strLog = sprintf("\n commond:%s \n key:%s \n memo:%s \n startdate:%s \n enddate:%s \n connectinfo:%s \n", 'mGet', json_encode($arrKey), $strMsg, $dateStartTime, $dateEndTime, json_encode($this->arrCurConnectInfo));
+            Log::log($strLog, Config::get('const.Log.LOG_REDISERR'));
+            return [];
         }
     }
 
@@ -58,9 +82,9 @@ class CacheRedis implements CacheContract {
                 return is_null($objWriteHander) ? false : $objWriteHander->set($strKey, $strValue);
             }
         } catch (Exception $e) {
-            //超时重试
+            //异常重试一次
             $strMsg = $e->getMessage();
-            if ($strMsg == 'read error on connection' && $blnTry == false) {
+            if ($blnTry == false) {
                 return $this->set($strKey, $strValue, $intTimeout, true);
             }
             //日志记录
@@ -82,9 +106,9 @@ class CacheRedis implements CacheContract {
             $objWriteHander = $this->getWriteHander($blnTry);
             return is_null($objWriteHander) ? 0 : $objWriteHander->unlink($mixKey);
         } catch (Exception $e) {
-            //超时重试
+            //异常重试一次
             $strMsg = $e->getMessage();
-            if ($strMsg == 'read error on connection' && $blnTry == false) {
+            if ($blnTry == false) {
                 return $this->del($mixKey, true);
             }
             //日志记录
