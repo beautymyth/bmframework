@@ -57,7 +57,7 @@ trait RedisConnect {
      */
     protected function getWriteHander($blnTry = false) {
         try {
-            if ($blnTry || is_null($this->objWriteHander) || (!$this->blnMulti && $this->objWriteHander->ping() != '+PONG')) {
+            if ($blnTry || is_null($this->objWriteHander)) {
                 $this->setRedisHanderWrite();
             }
         } catch (Exception $e) {
@@ -72,9 +72,8 @@ trait RedisConnect {
      */
     protected function getReadHander($blnTry = false) {
         try {
-            if ($blnTry || is_null($this->objReadHander) || (!$this->blnMulti && $this->objReadHander->ping() != '+PONG')) {
+            if ($blnTry || is_null($this->objReadHander)) {
                 $this->setRedisHanderRead();
-                var_dump($this->arrCurConnectInfo);
             }
         } catch (Exception $e) {
             $this->setRedisHanderRead();
