@@ -22,6 +22,10 @@ return [
     /**
      * 持久连接id
      */
-    'persistent_id' => 'messagecenter'
+    'persistent_id' => 'messagecenter',
+    /**
+     * 是否记录info
+     */
+    'log_info' => true
 ];
 

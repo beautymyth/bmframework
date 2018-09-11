@@ -45,9 +45,17 @@ return [
          */
         'LOG_WECHATMSGINFO' => 'WECHATMSGINFO',
         /**
-         * 接口日志
+         * 本系统接口日志
          */
-        'LOG_APIINFO' => 'APIINFO'
+        'LOG_APIINFO' => 'APIINFO',
+        /**
+         * 其它系统接口错误日志
+         */
+        'LOG_APIERR' => "APIERR",
+        /**
+         * 创建消息日志
+         */
+        'LOG_CREATEMSGINFO' => 'CREATEMSGINFO'
     ],
     /**
      * 数据格式校验类

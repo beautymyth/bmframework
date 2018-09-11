@@ -5,9 +5,7 @@ namespace Framework\Facade;
 use Framework\Contract\Cache\Cache as CacheContract;
 
 /**
- * @method static string|bool get($strKey)
- * @method static bool set($strKey, $strValue, $intTimeout = 0)
- * @method static int del($mixKey)
+ * @method static string|array|int|bool exec($strCommand, $mixParam, $blnTry = false, $strTryReason = '')
  * 
  * @see \Framework\Service\Cache\CacheRedis
  */
