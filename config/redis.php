@@ -8,8 +8,8 @@ return [
      * 主服务器优先配置在前面
      */
     'server' => [
-        ['host' => 'host', 'port' => '6379'],
-        ['host' => 'host', 'port' => '6379']
+        ['host' => '10.100.3.106', 'port' => '6379'],
+        ['host' => '10.100.2.235', 'port' => '6379']
     ],
     /**
      * 连接超时时间
@@ -22,6 +22,10 @@ return [
     /**
      * 持久连接id
      */
-    'persistent_id' => 'messagecenter'
+    'persistent_id' => 'devmanager',
+    /**
+     * 是否记录info
+     */
+    'log_info' => true
 ];
 

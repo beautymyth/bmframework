@@ -2,6 +2,7 @@
 
 namespace Framework\Service\Cache;
 
+use Redis;
 use Exception;
 use Framework\Facade\Log;
 use Framework\Facade\Config;
@@ -9,6 +10,7 @@ use Framework\Contract\Cache\Cache as CacheContract;
 
 /**
  * 缓存的redis实现
+ * https://github.com/phpredis/phpredis
  */
 class CacheRedis implements CacheContract {
 
@@ -18,105 +20,200 @@ class CacheRedis implements CacheContract {
     use RedisConnect;
 
     /**
-     * 获取值
-     * @param string $strKey key
-     * @return string or bool
+     * 执行redis命令
+     * @param string $strCommand 命令类型
+     * @param mix $mixParam 命令参数
+     * @param bool $blnTry 当前命令是否为重试执行
+     * @param string $strTryReason 重试原因
+     * @return string|array|int|bool 异常返回false，其它情况返回命令的执行结果
      */
-    public function get($strKey, $blnTry = false) {
+    public function exec($strCommand, $mixParam, $blnTry = false, $strTryReason = '') {
         try {
-            $dateStartTime = getMicroTime();
-            $objReadHander = $this->getReadHander($blnTry);
-            return is_null($objReadHander) ? false : $objReadHander->get($strKey);
+            $dateStartTime = $dateEndTime = getMicroTime();
+            //是否存在有效命令
+            if (!method_exists($this, $strCommand)) {
+                throw new Exception("{$strCommand}命令不存在");
+            }
+            //执行命令
+            return $this->$strCommand($mixParam, $blnTry);
         } catch (Exception $e) {
             //异常重试一次
-            $strMsg = $e->getMessage();
             if ($blnTry == false) {
-                return $this->get($strKey, true);
+                return $this->exec($strCommand, $mixParam, true, $e->getMessage());
             }
-            //日志记录
+            //异常日志记录
             $dateEndTime = getMicroTime();
-            $strLog = sprintf("\n commond:%s \n key:%s \n memo:%s \n startdate:%s \n enddate:%s \n connectinfo:%s \n", 'get', $strKey, $strMsg, $dateStartTime, $dateEndTime, json_encode($this->arrCurConnectInfo));
+            $strLog = sprintf("\n command:%s \n param:%s \n istry:%s \n exception:%s \n startdate:%s \n enddate:%s \n connectinfo:%s \n", $strCommand, json_encode($mixParam), $blnTry, $e->getMessage(), $dateStartTime, $dateEndTime, json_encode($this->arrCurConnectInfo));
             Log::log($strLog, Config::get('const.Log.LOG_REDISERR'));
             return false;
-        }
-    }
-
-    /**
-     * 批量获取值
-     * @param array $arrKey keys
-     * @return string or bool
-     */
-    public function mGet($arrKey, $blnTry = false) {
-        try {
-            $dateStartTime = getMicroTime();
-            $objReadHander = $this->getReadHander($blnTry);
-            return is_null($objReadHander) ? [] : $objReadHander->mGet($arrKey);
-        } catch (Exception $e) {
-            //异常重试一次
-            $strMsg = $e->getMessage();
-            if ($blnTry == false) {
-                return $this->mGet($arrKey, true);
-            }
-            //日志记录
+        } finally {
             $dateEndTime = getMicroTime();
-            $strLog = sprintf("\n commond:%s \n key:%s \n memo:%s \n startdate:%s \n enddate:%s \n connectinfo:%s \n", 'mGet', json_encode($arrKey), $strMsg, $dateStartTime, $dateEndTime, json_encode($this->arrCurConnectInfo));
-            Log::log($strLog, Config::get('const.Log.LOG_REDISERR'));
-            return [];
+            //重试日志记录
+            if ($blnTry) {
+                $strLog = sprintf("\n command:%s \n param:%s \n istry:%s \n exception:%s \n startdate:%s \n enddate:%s \n connectinfo:%s \n", $strCommand, json_encode($mixParam), $blnTry, $strTryReason, $dateStartTime, $dateEndTime, json_encode($this->arrCurConnectInfo));
+                Log::log($strLog, Config::get('const.Log.LOG_REDISTYR'));
+            }
+            if (Config::get('redis.log_info')) {
+                $strLog = sprintf("\n command:%s \n param:%s \n startdate:%s \n enddate:%s \n", $strCommand, json_encode($mixParam), $dateStartTime, $dateEndTime);
+                Log::log($strLog, Config::get('const.Log.LOG_REDISINFO'));
+            }
         }
     }
 
     /**
-     * 设置值
-     * @param string $strKey key 
-     * @param string $strValue value
-     * @param int $intTimeout 过期时间
+     * 判断键是否存在
+     * @param mix $mixParam 参数，如key1，['key1','key2']
+     * @return int|bool
+     */
+    public function exists($mixParam, $blnTry = false) {
+        $objReadHander = $this->getReadHander($blnTry);
+        return is_null($objReadHander) ? false : $objReadHander->exists($mixParam);
+    }
+
+    /**
+     * 获取string值
+     * @param mix $mixParam 参数，如key1，['key1','key2']
+     * @return string|array|bool
+     */
+    public function get($mixParam, $blnTry = false) {
+        $objReadHander = $this->getReadHander($blnTry);
+        return is_null($objReadHander) ? false : (is_array($mixParam) ? $objReadHander->mGet($mixParam) : $objReadHander->get($mixParam));
+    }
+
+    /**
+     * 获取hash值
+     * @param mix $mixParam 参数，如['key'=>['key1','key2'],'field'=>['field1','field2']]
+     * @return array|bool
+     */
+    public function hMGet($mixParam, $blnTry = false) {
+        $objReadHander = $this->getReadHander($blnTry);
+        if (is_null($objReadHander)) {
+            return false;
+        }
+        //处理key为数组
+        $arrKey = $mixParam['key'];
+        if (!is_array($arrKey)) {
+            $arrKey = [$arrKey];
+        }
+        //管道处理
+        $objReadHander->multi(Redis::PIPELINE);
+        foreach ($arrKey as $strKey) {
+            $objReadHander->hMGet($strKey, $mixParam['field']);
+        }
+        return $objReadHander->exec();
+    }
+
+    /**
+     * 获取list值
+     * @param mix $mixParam 参数，如['key'=>'aa','start'=>0,'end'=>2]
+     * @return array|bool
+     */
+    public function lRange($mixParam, $blnTry = false) {
+        $objReadHander = $this->getReadHander($blnTry);
+        return is_null($objReadHander) ? false : $objReadHander->lRange($mixParam['key'], $mixParam['start'], $mixParam['end']);
+    }
+
+    /**
+     * 设置string值
+     * @param string $mixParam 参数，如['key'=>'key1','value'=>'value1','expire'=>0]
      * @return bool
      */
-    public function set($strKey, $strValue, $intTimeout = 0, $blnTry = false) {
-        try {
-            $dateStartTime = getMicroTime();
-            $objWriteHander = $this->getWriteHander($blnTry);
-            if ($intTimeout > 0) {
-                return is_null($objWriteHander) ? false : $objWriteHander->set($strKey, $strValue, $intTimeout);
-            } else {
-                return is_null($objWriteHander) ? false : $objWriteHander->set($strKey, $strValue);
-            }
-        } catch (Exception $e) {
-            //异常重试一次
-            $strMsg = $e->getMessage();
-            if ($blnTry == false) {
-                return $this->set($strKey, $strValue, $intTimeout, true);
-            }
-            //日志记录
-            $dateEndTime = getMicroTime();
-            $strLog = sprintf("\n commond:%s \n key:%s \n value:%s \n memo:%s \n startdate:%s \n enddate:%s \n connectinfo:%s \n", 'set', $strKey, $strValue, $strMsg, $dateStartTime, $dateEndTime, json_encode($this->arrCurConnectInfo));
-            Log::log($strLog, Config::get('const.Log.LOG_REDISERR'));
+    public function set($mixParam, $blnTry = false) {
+        $objWriteHander = $this->getWriteHander($blnTry);
+        if (is_null($objWriteHander)) {
             return false;
         }
+        return isset($mixParam['expire']) && $mixParam['expire'] > 0 ? $objWriteHander->set($mixParam['key'], $mixParam['value'], $mixParam['expire']) : $objWriteHander->set($mixParam['key'], $mixParam['value']);
     }
 
     /**
-     * 删除值
-     * @param string|array $mixKey key
-     * @return int
+     * 设置hash值
+     * @param mix $mixParam 参数，如[['key' => 'key1', 'value' => ['a' => 'value1', 'b' => 'value2'], 'expire' => 0]]
+     * @return bool
      */
-    public function del($mixKey, $blnTry = false) {
-        try {
-            $dateStartTime = getMicroTime();
-            $objWriteHander = $this->getWriteHander($blnTry);
-            return is_null($objWriteHander) ? 0 : $objWriteHander->unlink($mixKey);
-        } catch (Exception $e) {
-            //异常重试一次
-            $strMsg = $e->getMessage();
-            if ($blnTry == false) {
-                return $this->del($mixKey, true);
-            }
-            //日志记录
-            $dateEndTime = getMicroTime();
-            $strLog = sprintf("\n commond:%s \n key:%s \n memo:%s \n startdate:%s \n enddate:%s \n connectinfo:%s \n", 'del', is_array($mixKey) ? json_encode($mixKey) : $mixKey, $strMsg, $dateStartTime, $dateEndTime, json_encode($this->arrCurConnectInfo));
-            Log::log($strLog, Config::get('const.Log.LOG_REDISERR'));
-            return 0;
+    public function hMSet($mixParam, $blnTry = false) {
+        $objWriteHander = $this->getWriteHander($blnTry);
+        if (is_null($objWriteHander)) {
+            return false;
         }
+        //管道处理
+        $objWriteHander->multi(Redis::PIPELINE);
+        foreach ($mixParam as $arrTmp) {
+            $objWriteHander->hMSet($arrTmp['key'], $arrTmp['value']);
+            if (isset($arrTmp['expire']) && $arrTmp['expire'] > 0) {
+                $objWriteHander->expire($arrTmp['key'], $arrTmp['expire']);
+            }
+        }
+        $arrRes = $objWriteHander->exec();
+        //报告错误
+        foreach ($arrRes as $mixValue) {
+            if ($mixValue === false) {
+                Log::log('hMSet存在失败:' . json_encode($mixParam), Config::get('const.Log.LOG_REDISERR'));
+                break;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 设置list值
+     * @param mix $mixParam 参数，如['key' => 'key1', 'value' => ['value1','value2'], 'expire' => 0]
+     * @return bool|int
+     */
+    public function lpush($mixParam, $blnTry = false) {
+        $objWriteHander = $this->getWriteHander($blnTry);
+        if (is_null($objWriteHander)) {
+            return false;
+        }
+        //管道处理
+        $objWriteHander->multi(Redis::PIPELINE);
+        foreach ($mixParam['value'] as $strValue) {
+            $objWriteHander->lPush($mixParam['key'], $strValue);
+        }
+        $blnExpire = false;
+        if (isset($mixParam['expire']) && $mixParam['expire'] > 0) {
+            $blnExpire = true;
+            $objWriteHander->expire($mixParam['key'], $mixParam['expire']);
+        }
+        $arrRes = $objWriteHander->exec();
+        //报告错误
+        foreach ($arrRes as $mixValue) {
+            if ($mixValue === false) {
+                Log::log('lpush存在失败:' . json_encode($mixParam), Config::get('const.Log.LOG_REDISERR'));
+                break;
+            }
+        }
+        return !$blnExpire ? $arrRes[count($arrRes) - 1] : $arrRes[count($arrRes) - 2];
+    }
+
+    /**
+     * 截断list
+     * @param mix $mixParam 参数，如['key'=>'aa','start'=>0,'end'=>2]
+     * @return array|bool
+     */
+    public function lTrim($mixParam, $blnTry = false) {
+        $objWriteHander = $this->getWriteHander($blnTry);
+        return is_null($objWriteHander) ? false : $objWriteHander->lTrim($mixParam['key'], $mixParam['start'], $mixParam['end']);
+    }
+
+    /**
+     * 删除key
+     * @param mix $mixParam 参数，如key1，['key1','key2']
+     * @return int|bool
+     */
+    public function del($mixParam, $blnTry = false) {
+        $objWriteHander = $this->getWriteHander($blnTry);
+        return is_null($objWriteHander) ? false : $objWriteHander->unlink($mixParam);
+    }
+
+    /**
+     * 设置key的过期时间
+     * @param mix $mixParam 参数，如['key'=>'key1','expire'=>0]
+     * @return int|bool
+     */
+    public function expire($mixParam, $blnTry = false) {
+        $objWriteHander = $this->getWriteHander($blnTry);
+        return is_null($objWriteHander) ? false : $objWriteHander->expire($mixParam['key'], $mixParam['expire']);
     }
 
 }

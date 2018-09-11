@@ -29,6 +29,14 @@ return [
          */
         'LOG_REDISERR' => 'REDISERR',
         /**
+         * redis重试
+         */
+        'LOG_REDISTYR' => 'REDISTRY',
+        /**
+         * redis普通日志
+         */
+        'LOG_REDISINFO' => 'REDISINFO',
+        /**
          * 消息队列错误
          */
         'LOG_MQERR' => 'MESSAGEQUEUEERR',
@@ -45,7 +53,7 @@ return [
          */
         'LOG_WECHATMSGINFO' => 'WECHATMSGINFO',
         /**
-         * 接口日志
+         * 本系统接口日志
          */
         'LOG_APIINFO' => 'APIINFO'
     ],

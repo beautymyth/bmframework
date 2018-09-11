@@ -9,6 +9,9 @@ return [
      * 1.提供类中方法的静态调用
      */
     'facade' => [
+        /**
+         * 框架
+         */
         'Config' => Framework\Facade\Config::class,
         'Log' => Framework\Facade\Log::class,
         'Cache' => Framework\Facade\Cache::class,
@@ -35,6 +38,8 @@ return [
         Framework\Provider\Security\DesServiceProvider::class,
         Framework\Provider\Network\HttpServiceProvider::class,
         Framework\Provider\Validation\ValidFormatServiceProvider::class,
+	Framework\Provider\Database\DBServiceProvider::class,
+        Framework\Provider\Database\HashCacheDBServiceProvider::class,
     /**
      * 应用
      */

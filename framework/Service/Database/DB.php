@@ -398,6 +398,7 @@ class DB {
             $strSql = $this->dealFenBiao($strSql, $arrParams);
             //4.具体处理
             $strSqlTotal = $this->getSqlTotal($strSql);
+            $dateStartTime = getMicroTime();
             //详细数据
             $arrRes = $this->getPDO()->selectPage($strSql, $intStart, $intPageSize, $arrParams);
             if ($blnNeedTotal) {
@@ -409,6 +410,7 @@ class DB {
                 }
                 $intTotal = intval($arrTotal[0]['total']);
             }
+            $dateEndTime = getMicroTime();
             //5.返回结果
             return $arrRes;
         } catch (Exception $e) {
