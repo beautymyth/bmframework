@@ -39,7 +39,7 @@ return [
                 'port' => '3306',
                 'db' => 'devmanager',
                 'username' => 'test',
-                'password' => '+foUvu6l60YHoUj79pj33oJLw3AUf7ix/UtvKF7DHMaO57Oq+TA+AtTrbjPf57rRUl0wurmAgwVSDPCKvpQ8Kw=='
+                'password' => '4jqp5AzwjjNEC0rc7RyLELoLMG5HAHerBNR9XuvbqUaYCf5jO+eNSjRFmQMnQDH25rJ7VAeBb4ORsTq5AWU/sA=='
             ],
             /**
              * 从库
@@ -52,7 +52,7 @@ return [
                     'port' => '3306',
                     'db' => 'devmanager',
                     'username' => 'test',
-                    'password' => '+foUvu6l60YHoUj79pj33oJLw3AUf7ix/UtvKF7DHMaO57Oq+TA+AtTrbjPf57rRUl0wurmAgwVSDPCKvpQ8Kw=='
+                    'password' => '4jqp5AzwjjNEC0rc7RyLELoLMG5HAHerBNR9XuvbqUaYCf5jO+eNSjRFmQMnQDH25rJ7VAeBb4ORsTq5AWU/sA=='
                 ]
             ],
             /**

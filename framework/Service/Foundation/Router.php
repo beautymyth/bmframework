@@ -2,6 +2,7 @@
 
 namespace Framework\Service\Foundation;
 
+use Framework\Facade\Log;
 use Framework\Facade\Config;
 use Framework\Contract\Http\Request;
 use Framework\Service\Foundation\Pipeline;
@@ -160,6 +161,11 @@ class Router {
             $strUri = 'web/' . $strUri;
         }
         $arrUri = explode('/', $strUri);
+
+        //路径首字母转为大写
+        array_walk($arrUri, function(&$strValue) {
+            $strValue = ucfirst($strValue);
+        });
 
         //uri指向控制器方法，至少包含控制器与控制器方法
         if (count($arrUri) >= 2) {

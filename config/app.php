@@ -98,7 +98,7 @@ return [
     /**
      * web/api路由
      * 1.配置uri对应的控制器
-     * 2.如果没配置，则使用默认uri结构处理
+     * 2.如果没配置，则使用默认uri结构处理，需要注意控制器文件夹首字母且只能首字母为大写
      */
     'route' => [
         'login' => 'Web\\Common\\LoginController',

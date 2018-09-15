@@ -24,7 +24,8 @@ class CheckAuth {
      * 1.login页面
      */
     protected $arrNotCheckPattern = [
-        '/^(.*)(\/)?login(\/[a-z]+)*$/i'
+        '/^(.*)(\/)?login(\/[a-z]+)*$/i',
+        '/^(.*)(\/)?web\/test(\/[a-z]+)*$/i'
     ];
 
     /**
