@@ -10,6 +10,10 @@ return [
      */
     'default_business_type' => 'devmanager',
     /**
+     * 是否记录info
+     */
+    'log_info' => false,
+    /**
      * 业务信息
      */
     'business_info' => [

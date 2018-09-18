@@ -262,8 +262,10 @@ class DB {
             Log::log($strErrLog, Config::get('const.Log.LOG_SQLERR'));
             return -100;
         } finally {
-            $strErrLog = sprintf("\n sql:%s \n param:%s \n startdate:%s \n enddate:%s \n", $strSql, json_encode($arrParams), $dateStartTime, $dateEndTime);
-            Log::log($strErrLog, Config::get('const.Log.LOG_SQLINFO'));
+            if (Config::get('database.log_info')) {
+                $strErrLog = sprintf("\n sql:%s \n param:%s \n startdate:%s \n enddate:%s \n", $strSql, json_encode($arrParams), $dateStartTime, $dateEndTime);
+                Log::log($strErrLog, Config::get('const.Log.LOG_SQLINFO'));
+            }
         }
     }
 
@@ -297,8 +299,10 @@ class DB {
             Log::log($strErrLog, Config::get('const.Log.LOG_SQLERR'));
             return -100;
         } finally {
-            $strErrLog = sprintf("\n sql:%s \n param:%s \n startdate:%s \n enddate:%s \n", $strSql, json_encode($arrParams), $dateStartTime, $dateEndTime);
-            Log::log($strErrLog, Config::get('const.Log.LOG_SQLINFO'));
+            if (Config::get('database.log_info')) {
+                $strErrLog = sprintf("\n sql:%s \n param:%s \n startdate:%s \n enddate:%s \n", $strSql, json_encode($arrParams), $dateStartTime, $dateEndTime);
+                Log::log($strErrLog, Config::get('const.Log.LOG_SQLINFO'));
+            }
         }
     }
 
@@ -332,8 +336,10 @@ class DB {
             Log::log($strErrLog, Config::get('const.Log.LOG_SQLERR'));
             return -100;
         } finally {
-            $strErrLog = sprintf("\n sql:%s \n param:%s \n startdate:%s \n enddate:%s \n", $strSql, json_encode($arrParams), $dateStartTime, $dateEndTime);
-            Log::log($strErrLog, Config::get('const.Log.LOG_SQLINFO'));
+            if (Config::get('database.log_info')) {
+                $strErrLog = sprintf("\n sql:%s \n param:%s \n startdate:%s \n enddate:%s \n", $strSql, json_encode($arrParams), $dateStartTime, $dateEndTime);
+                Log::log($strErrLog, Config::get('const.Log.LOG_SQLINFO'));
+            }
         }
     }
 
@@ -363,14 +369,16 @@ class DB {
             //5.返回结果
             return $arrRes;
         } catch (Exception $e) {
-            $$dateEndTime2 = getMicroTime();
+            $dateEndTime2 = getMicroTime();
             $strErrLog = sprintf("\n error:%s \n sql:%s \n param:%s \n startdate:%s \n enddate:%s \n", $e->getMessage(), $strSql, json_encode($arrParams), $dateStartTime, $dateEndTime2);
             Log::log($strErrLog, Config::get('const.Log.LOG_SQLERR'));
             $blnException = true;
             return [];
         } finally {
-            $strErrLog = sprintf("\n sql:%s \n param:%s \n startdate:%s \n enddate:%s \n", $strSql, json_encode($arrParams), $dateStartTime, $dateEndTime);
-            Log::log($strErrLog, Config::get('const.Log.LOG_SQLINFO'));
+            if (Config::get('database.log_info')) {
+                $strErrLog = sprintf("\n sql:%s \n param:%s \n startdate:%s \n enddate:%s \n", $strSql, json_encode($arrParams), $dateStartTime, $dateEndTime);
+                Log::log($strErrLog, Config::get('const.Log.LOG_SQLINFO'));
+            }
         }
     }
 
@@ -414,14 +422,16 @@ class DB {
             //5.返回结果
             return $arrRes;
         } catch (Exception $e) {
-            $$dateEndTime2 = getMicroTime();
+            $dateEndTime2 = getMicroTime();
             $strErrLog = sprintf("\n error:%s \n sql:%s \n param:%s \n startdate:%s \n enddate:%s \n", $e->getMessage(), $strSql, json_encode($arrParams), $dateStartTime, $dateEndTime2);
             Log::log($strErrLog, Config::get('const.Log.LOG_SQLERR'));
             $blnException = true;
             return [];
         } finally {
-            $strErrLog = sprintf("\n sql:%s \n param:%s \n startdate:%s \n enddate:%s \n", $strSql, json_encode($arrParams), $dateStartTime, $dateEndTime);
-            Log::log($strErrLog, Config::get('const.Log.LOG_SQLINFO'));
+            if (Config::get('database.log_info')) {
+                $strErrLog = sprintf("\n sql:%s \n param:%s \n startdate:%s \n enddate:%s \n", $strSql, json_encode($arrParams), $dateStartTime, $dateEndTime);
+                Log::log($strErrLog, Config::get('const.Log.LOG_SQLINFO'));
+            }
         }
     }
 
@@ -444,14 +454,16 @@ class DB {
             //3.返回结果
             return $blnRes;
         } catch (Exception $e) {
-            $$dateEndTime2 = getMicroTime();
+            $dateEndTime2 = getMicroTime();
             $strErrLog = sprintf("\n error:%s \n sql:exec %s %s \n param:%s \n startdate:%s \n enddate:%s \n", $e->getMessage(), $strProcName, $strProcParams, json_encode($arrParams), $dateStartTime, $dateEndTime2);
             Log::log($strErrLog, Config::get('const.Log.LOG_SQLERR'));
             $blnException = true;
             return [];
         } finally {
-            $strErrLog = sprintf("\n sql:exec %s %s \n param:%s \n startdate:%s \n enddate:%s \n", $strProcName, $strProcParams, json_encode($arrParams), $dateStartTime, $dateEndTime);
-            Log::log($strErrLog, Config::get('const.Log.LOG_SQLINFO'));
+            if (Config::get('database.log_info')) {
+                $strErrLog = sprintf("\n sql:exec %s %s \n param:%s \n startdate:%s \n enddate:%s \n", $strProcName, $strProcParams, json_encode($arrParams), $dateStartTime, $dateEndTime);
+                Log::log($strErrLog, Config::get('const.Log.LOG_SQLINFO'));
+            }
         }
     }
 
