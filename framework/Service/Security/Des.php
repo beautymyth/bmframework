@@ -63,6 +63,10 @@ class Des {
         $intShaLen = 32;
         $strHMac = substr($strValue, $intIvLen, $intShaLen);
         $strCiphertext = substr($strValue, $intIvLen + $intShaLen);
+        //格式验证
+        if (strlen($strIv) != 16 || strlen($strHMac) != 32 || strlen($strCiphertext) <= 0) {
+            return '';
+        }
         $strOriginaltext = openssl_decrypt($strCiphertext, $this->strAesCipher, Config::get('des.aes_key'), OPENSSL_RAW_DATA, $strIv);
         $strCalcMac = hash_hmac('sha256', $strCiphertext, Config::get('des.aes_key'), true);
         return hash_equals($strHMac, $strCalcMac) ? $strOriginaltext : '';
