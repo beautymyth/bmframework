@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+        <meta content="charset=utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=EDGE">
         <meta name="renderer" content="webkit|ie-comp|ie-stand">
         <title>{{title}}</title>  

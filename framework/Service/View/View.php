@@ -99,20 +99,24 @@ class View {
      */
     protected function resolveCss(&$strView, $arrCss) {
         foreach ($arrCss as $arrCssTmp) {
+            $strSearch = '</head>';
             //远程文件直接加载
             if (isset($arrCssTmp['is_remote']) && $arrCssTmp['is_remote'] == 1) {
-                $strView .= sprintf('<link href="%s" rel="stylesheet">', $arrCssTmp['path']);
+                $strRef = sprintf('<link href="%s" rel="stylesheet">', $arrCssTmp['path']);
+                $strView = str_replace($strSearch, $strRef . $strSearch, $strView);
                 continue;
             }
 
             //本地文件，不用压缩
             if (isset($arrCssTmp['is_pack']) && $arrCssTmp['is_pack'] == 0) {
-                $strView .= sprintf('<link href="%s%s?version=%s" rel="stylesheet">', Config::get('web.css.domain'), $arrCssTmp['path'], Config::get('web.css.version'));
+                $strRef = sprintf('<link href="%s%s?version=%s" rel="stylesheet">', Config::get('web.css.domain'), $arrCssTmp['path'], Config::get('web.css.version'));
+                $strView = str_replace($strSearch, $strRef . $strSearch, $strView);
                 continue;
             }
 
             //本地文件，需要压缩
-            $strView .= sprintf('<link href="%s%s?version=%s" rel="stylesheet">', Config::get('web.css.domain'), $this->getPackCss($arrCssTmp['path']), Config::get('web.css.version'));
+            $strRef = sprintf('<link href="%s%s?version=%s" rel="stylesheet">', Config::get('web.css.domain'), $this->getPackCss($arrCssTmp['path']), Config::get('web.css.version'));
+            $strView = str_replace($strSearch, $strRef . $strSearch, $strView);
         }
     }
 
@@ -165,20 +169,24 @@ class View {
      */
     protected function resolveJs(&$strView, $arrJs) {
         foreach ($arrJs as $arrJsTmp) {
+            $strSearch = isset($arrJsTmp['is_js_head']) && $arrJsTmp['is_js_head'] == 1 ? '</head>' : '</body>';
             //远程文件直接加载
             if (isset($arrJsTmp['is_remote']) && $arrJsTmp['is_remote'] == 1) {
-                $strView .= sprintf('<script src="%s"></script>', $arrJsTmp['path']);
+                $strRef = sprintf('<script src="%s"></script>', $arrJsTmp['path']);
+                $strView = str_replace($strSearch, $strRef . $strSearch, $strView);
                 continue;
             }
 
             //本地文件，不用压缩
             if (isset($arrJsTmp['is_pack']) && $arrJsTmp['is_pack'] == 0) {
-                $strView .= sprintf('<script src="%s%s?version=%s"></script>', Config::get('web.js.domain'), $arrJsTmp['path'], Config::get('web.js.version'));
+                $strRef = sprintf('<script src="%s%s?version=%s"></script>', Config::get('web.js.domain'), $arrJsTmp['path'], Config::get('web.js.version'));
+                $strView = str_replace($strSearch, $strRef . $strSearch, $strView);
                 continue;
             }
 
             //本地文件，需要压缩
-            $strView .= sprintf('<script src="%s%s?version=%s"></script>', Config::get('web.js.domain'), $this->getPackJs($arrJsTmp['path']), Config::get('web.js.version'));
+            $strRef = sprintf('<script src="%s%s?version=%s"></script>', Config::get('web.js.domain'), $this->getPackJs($arrJsTmp['path']), Config::get('web.js.version'));
+            $strView = str_replace($strSearch, $strRef . $strSearch, $strView);
         }
     }
 

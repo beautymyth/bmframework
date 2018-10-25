@@ -1,5 +1,4 @@
-
-(function ($, window, document) {
+(function (Vue, $, window, document) {
     //页面加载完处理
     $(document).ready(function () {
         var login = {
@@ -38,4 +37,4 @@
         };
         login.init();
     });
-}(jQuery, window, document));
+}(Vue, jQuery, window, document));

@@ -40,14 +40,14 @@ class LayoutController extends BaseController {
              * is_remote:远程文件，直接加载
              */
             'js' => [
-                    ['path' => 'plugin/jquery-1.12.2.min.js', 'is_pack' => 0, 'is_remote' => 0],
-                    ['path' => 'https://cdn.jsdelivr.net/npm/vue', 'is_pack' => 0, 'is_remote' => 1]
+                ['path' => 'plugin/jquery-1.12.2.min.js', 'is_pack' => 0, 'is_remote' => 0],
+                ['path' => 'plugin/vue.min.js', 'is_pack' => 0, 'is_remote' => 0]
             ],
             /**
              * css
              */
             'css' => [
-                    ['path' => 'plugin/bootstrap.min.css', 'is_pack' => 0, 'is_remote' => 0]
+                ['path' => 'plugin/bootstrap.min.css', 'is_pack' => 0, 'is_remote' => 0]
             ]
         ];
     }
