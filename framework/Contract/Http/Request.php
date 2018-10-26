@@ -26,6 +26,24 @@ interface Request {
     public function getCookie($strCookieName);
 
     /**
+     * 设置cookie
+     * @param string $strCookieName cookie名称
+     * @param string $strCookieValue cookie值
+     * @param int $intExpire 超时时间，默认为会话结束
+     * @param string $strDomain cookie的有效域名/子域名，默认当前域名
+     * @param string $strPath cookie作用域，默认根目录
+     */
+    public function setCookie($strCookieName, $strCookieValue = '', $intExpire = 0, $strDomain = '', $strPath = '/');
+
+    /**
+     * 删除cookie
+     * @param string $strCookieName cookie名称
+     * @param string $strDomain cookie的有效域名/子域名，默认当前域名
+     * @param string $strPath cookie作用域
+     */
+    public function delCookie($strCookieName, $strDomain = '', $strPath = '/');
+
+    /**
      * 获取uri
      */
     public function getUri();

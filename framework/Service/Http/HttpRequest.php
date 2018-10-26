@@ -2,6 +2,7 @@
 
 namespace Framework\Service\Http;
 
+use Framework\Facade\Des;
 use Framework\Contract\Http\Request as RequestContract;
 
 /**
@@ -67,7 +68,30 @@ class HttpRequest implements RequestContract {
      * @param string $strCookieName cookie名
      */
     public function getCookie($strCookieName) {
-        return isset($this->arrCookie[$strCookieName]) ? $this->arrCookie[$strCookieName] : '';
+        return Des::decrypt(isset($this->arrCookie[$strCookieName]) ? $this->arrCookie[$strCookieName] : '');
+    }
+
+    /**
+     * 设置cookie
+     * @param string $strCookieName cookie名称
+     * @param string $strCookieValue cookie值
+     * @param int $intExpire 超时时间，默认为会话结束
+     * @param string $strDomain cookie的有效域名/子域名，默认当前域名
+     * @param string $strPath cookie作用域，默认根目录
+     */
+    public function setCookie($strCookieName, $strCookieValue = '', $intExpire = 0, $strDomain = '', $strPath = '/') {
+        $strCookieValue = Des::encrypt($strCookieValue);
+        return setcookie($strCookieName, $strCookieValue, $intExpire, $strPath, $strDomain);
+    }
+
+    /**
+     * 删除cookie
+     * @param string $strCookieName cookie名称
+     * @param string $strDomain cookie的有效域名/子域名，默认当前域名
+     * @param string $strPath cookie作用域
+     */
+    public function delCookie($strCookieName, $strDomain = '', $strPath = '/') {
+        return setcookie($strCookieName, '', time() - 1, $strPath, $strDomain);
     }
 
     /**
