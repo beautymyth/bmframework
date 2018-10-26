@@ -104,6 +104,12 @@ class Router {
             return $strController;
         }
 
+        //缓存查找
+        $strController = $this->findControllerCache($objRequest);
+        if (!empty($strController)) {
+            return $strController;
+        }
+
         //文件查找
         $strController = $this->findControllerFile($objRequest);
         if (!empty($strController)) {
@@ -149,6 +155,51 @@ class Router {
     }
 
     /**
+     * 从缓存中获取控制器
+     */
+    protected function findControllerCache($objRequest) {
+        return $this->getControllerCache($objRequest->getUri());
+    }
+
+    /**
+     * 获取cache
+     */
+    protected function getControllerCache($strKey) {
+        //缓存文件
+        $strCacheFile = $this->objApp->make('path.storage') . '/cache/router/' . 'router.log';
+
+        //不存在缓存文件
+        if (!file_exists($strCacheFile)) {
+            return '';
+        }
+
+        //存在解析
+        $arrRouter = json_decode(file_get_contents($strCacheFile), true);
+
+        //获取uri对应的控制器
+        return isset($arrRouter[$strKey]) ? $arrRouter[$strKey] : '';
+    }
+
+    /**
+     * 设置cache
+     */
+    protected function setControllerCache($strKey, $strValue) {
+        //缓存文件
+        $strCacheFile = $this->objApp->make('path.storage') . '/cache/router/' . 'router.log';
+
+        //解析
+        if (!file_exists($strCacheFile)) {
+            $arrRouter = [];
+        } else {
+            $arrRouter = json_decode(file_get_contents($strCacheFile), true);
+        }
+
+        //写入
+        $arrRouter[$strKey] = $strValue;
+        file_put_contents($strCacheFile, json_encode($arrRouter));
+    }
+
+    /**
      * 从文件中获取控制器
      */
     protected function findControllerFile($objRequest) {
@@ -162,20 +213,21 @@ class Router {
         }
         $arrUri = explode('/', $strUri);
 
-        //路径首字母转为大写
-        array_walk($arrUri, function(&$strValue) {
-            $strValue = ucfirst($strValue);
-        });
-
         //uri指向控制器方法，至少包含控制器与控制器方法
         if (count($arrUri) >= 2) {
             //控制器目录
-            $strDirPath = $strControllerDir . implode('/', array_slice($arrUri, 0, count($arrUri) - 2));
+            $strDirPath = '';
+            $this->getControllerPath($strControllerDir, $strDirPath, array_slice($arrUri, 0, count($arrUri) - 2));
+            $strDirPath = $strControllerDir . $strDirPath;
+
+            //匹配控制器
             if (is_dir($strDirPath)) {
                 $strControllerName = $arrUri[count($arrUri) - 2] . 'Controller.php';
                 foreach (scandir($strDirPath) as $strFileName) {
                     if (strtolower($strControllerName) == strtolower($strFileName)) {
-                        return $this->strNameSpace . implode('\\', array_slice($arrUri, 0, count($arrUri) - 2)) . '\\' . str_replace('.php', '', $strFileName) . '@' . $arrUri[count($arrUri) - 1];
+                        $strController = $this->strNameSpace . implode('\\', array_slice($arrUri, 0, count($arrUri) - 2)) . '\\' . str_replace('.php', '', $strFileName) . '@' . $arrUri[count($arrUri) - 1];
+                        $this->setControllerCache($strUri, $strController);
+                        return $strController;
                     }
                 }
             }
@@ -186,12 +238,18 @@ class Router {
             //uri指向控制器，至少包含控制器
             if (count($arrUri) >= 1) {
                 //控制器目录
-                $strDirPath = $strControllerDir . implode('/', array_slice($arrUri, 0, count($arrUri) - 1));
+                $strDirPath = '';
+                $this->getControllerPath($strControllerDir, $strDirPath, array_slice($arrUri, 0, count($arrUri) - 1));
+                $strDirPath = $strControllerDir . $strDirPath;
+
+                //匹配控制器
                 if (is_dir($strDirPath)) {
                     $strControllerName = $arrUri[count($arrUri) - 1] . 'Controller.php';
                     foreach (scandir($strDirPath) as $strFileName) {
                         if (strtolower($strControllerName) == strtolower($strFileName)) {
-                            return $this->strNameSpace . implode('\\', array_slice($arrUri, 0, count($arrUri) - 1)) . '\\' . str_replace('.php', '', $strFileName);
+                            $strController = $this->strNameSpace . implode('\\', array_slice($arrUri, 0, count($arrUri) - 1)) . '\\' . str_replace('.php', '', $strFileName);
+                            $this->setControllerCache($strUri, $strController);
+                            return $strController;
                         }
                     }
                 }
@@ -200,6 +258,20 @@ class Router {
 
         //匹配不到
         return '';
+    }
+
+    /**
+     * 递归获取控制器的文件夹
+     */
+    protected function getControllerPath($strControllerDir, &$strControllPath, &$arrUri) {
+        $strCurDir = array_shift($arrUri);
+        foreach (scandir($strControllerDir, 1) as $strDir) {
+            if (strtolower($strCurDir) == strtolower($strDir)) {
+                $strControllPath.=$strDir . '/';
+                $strControllerDir.='/' . $strDir;
+                $this->getControllerPath($strControllerDir, $strControllPath, $arrUri);
+            }
+        }
     }
 
 }
