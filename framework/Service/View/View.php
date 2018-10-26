@@ -54,7 +54,7 @@ class View {
         //合并数据
         $arrData = array_merge_recursive($arrDataTlp, $arrData);
         if (!empty($strViewTlp)) {
-            $strView = str_replace('{{layout_content}}', $strView, $strViewTlp);
+            $strView = str_replace('{{template}}', $strView, $strViewTlp);
         }
 
         //内容,js,css
@@ -76,7 +76,7 @@ class View {
         }
 
         if (isset($arrTemplate['view'])) {
-            $strTemplatePath = $this->objApp->make('path.resource') . '/view/' . $arrTemplate['view'] . '.view.php';
+            $strTemplatePath = $this->objApp->make('path.resource') . '/view/' . $arrTemplate['view'] . '.view.html';
             $strViewTlp = file_exists($strTemplatePath) ? file_get_contents($strTemplatePath) : '';
         }
     }
@@ -102,7 +102,7 @@ class View {
             $strSearch = '</head>';
             //远程文件直接加载
             if (isset($arrCssTmp['is_remote']) && $arrCssTmp['is_remote'] == 1) {
-                $strRef = sprintf('<link href="%s" rel="stylesheet">', $arrCssTmp['path']);
+                $strRef = sprintf('<link href="%s?version=%s" rel="stylesheet">', $arrCssTmp['path'], Config::get('web.css.version'));
                 $strView = str_replace($strSearch, $strRef . $strSearch, $strView);
                 continue;
             }
@@ -169,10 +169,10 @@ class View {
      */
     protected function resolveJs(&$strView, $arrJs) {
         foreach ($arrJs as $arrJsTmp) {
-            $strSearch = isset($arrJsTmp['is_js_head']) && $arrJsTmp['is_js_head'] == 1 ? '</head>' : '</body>';
+            $strSearch = isset($arrJsTmp['is_addhead']) && $arrJsTmp['is_addhead'] == 1 ? '</head>' : '</body>';
             //远程文件直接加载
             if (isset($arrJsTmp['is_remote']) && $arrJsTmp['is_remote'] == 1) {
-                $strRef = sprintf('<script src="%s"></script>', $arrJsTmp['path']);
+                $strRef = sprintf('<script src="%s?version=%s"></script>', $arrJsTmp['path'], Config::get('web.js.version'));
                 $strView = str_replace($strSearch, $strRef . $strSearch, $strView);
                 continue;
             }
@@ -261,7 +261,7 @@ class View {
     protected function getViewPathConfig() {
         $strViewPath = Config::get('app.view.' . Request::getUri());
         if (!empty($strViewPath)) {
-            $strFilePath = $this->objApp->make('path.resource') . '/view/' . $strViewPath . '.view.php';
+            $strFilePath = $this->objApp->make('path.resource') . '/view/' . $strViewPath . '.view.html';
             if (is_file($strFilePath)) {
                 return $strFilePath;
             }
@@ -277,7 +277,7 @@ class View {
         if (!in_array(Request::getSecondDir(), Config::get('app.second_dir'))) {
             $strUri = 'web/' . $strUri;
         }
-        $strFilePath = $this->objApp->make('path.resource') . '/view/' . $strUri . '.view.php';
+        $strFilePath = $this->objApp->make('path.resource') . '/view/' . $strUri . '.view.html';
         if (is_file($strFilePath)) {
             return $strFilePath;
         }
