@@ -44,11 +44,11 @@ class LoginController extends BaseController {
              * path:路径
              * is_pack:本地文件，是否需要压缩
              * is_remote:远程文件，直接加载
-             * is_js_head:js文件加载位置，1:head 0:body，默认0
+             * is_addhead:js文件加载位置，1:head 0:body，默认0
              */
             'js' => [
-                ['path' => 'plugin/jquery-1.12.2.min.js', 'is_pack' => 0, 'is_remote' => 0, 'is_js_head' => 1],
-                ['path' => 'plugin/vue.min.js', 'is_pack' => 0, 'is_remote' => 0, 'is_js_head' => 1],
+                ['path' => 'plugin/jquery-1.12.2.min.js', 'is_pack' => 0, 'is_remote' => 0, 'is_addhead' => 1],
+                ['path' => 'plugin/vue.min.js', 'is_pack' => 0, 'is_remote' => 0, 'is_addhead' => 1],
                 ['path' => 'common/login.js', 'is_pack' => 1, 'is_remote' => 0]
             ],
             /**
